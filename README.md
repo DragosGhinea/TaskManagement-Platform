@@ -5,7 +5,7 @@ A project made with **ASP.NET MVC 6** and EntityFramework that represents a task
 You can register/login and create projects with multiple leaders, tasks that have various people assigned to them,
 comments and statuses. More details below!
 
-![MainPage](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/MainPagePreview.png)
+![MainPage](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/MainPagePreview.png)
 
 ## Main Features
 The application contains:
@@ -28,24 +28,26 @@ The application contains:
 ## Database Design
 Altough the database is generated code first, based on models, it  was firstly designed as a diagram.
 
+![DatabaseDiagram](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/DatabaseDiagram.svg)
+
 ## Preview Images
 
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview1.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview2.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview3.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview4.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview5.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview6.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview7.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview8.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview9.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview10.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview11.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview12.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview13.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview14.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview15.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/Previews/blob/main/AppPreview16.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview1.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview2.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview3.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview4.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview5.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview6.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview7.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview8.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview9.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview10.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview11.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview12.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview13.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview14.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview15.png)
+![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview16.png)
 
 ## Other Info
 - This project was initially created in romanian and translated afterwards. The project might not have it's variables fully translated! (Sorry for that)
