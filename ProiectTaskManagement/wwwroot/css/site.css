@@ -1,0 +1,59 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.formular-background {
+    background-color: white;
+    position: absolute;
+    z-index: -1;
+    width: 60%;
+    height: 100%;
+    top: 0;
+    left: 20%;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+}
+
+/*.alert > .x-button {
+    top: 50%;
+    transform: translate(0, -50%);
+    right: 1vw;
+    position: absolute;
+    font-weight: bold;
+    opacity: 0.4;
+}*/
+
+.my-success-alert {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #4afa43;
+    z-index: 100;
+}
+
+.my-danger-alert{
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    z-index: 100;
+    transform: translate(-50%, 0);
+}
+
+.note-editor .dropdown-toggle::after {
+    display: none;
+}

@@ -1,0 +1,117 @@
+﻿.statusTask {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    right: 10px;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+    .statusTask span {
+        font-size: 14px;
+        display: inline-block;
+        position: relative;
+    }
+
+    .statusTask button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        transform: scale(0.7);
+    }
+
+.tasks {
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+/*@media screen and (max-width: 992px){
+    .tasks {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .tasks {
+        grid-template-columns: 1fr;
+    }
+}*/
+
+.task-separator {
+    overflow: visible;
+    padding: 0;
+    border: none;
+    border-top: medium double #333;
+    color: #333;
+    text-align: center;
+}
+
+
+    .task-separator:after {
+        content: "Tasks";
+        display: inline-block;
+        position: relative;
+        top: -0.9em;
+        color: black;
+        font-size: 1.8em;
+        padding: 0 0.25em;
+        background: white;
+    }
+
+.task {
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-between;
+    cursor: default;
+}
+
+    .task > :not(a) {
+        max-width: 80%;
+    }
+
+
+
+.avatar-group {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    right: 20px;
+    top: 70px;
+}
+
+    .avatar-group img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .avatar-group .more {
+        width: 50px;
+        height: 50px;
+        display: inline-block;
+        box-sizing: initial;
+        background: #666;
+        border: 0.1em solid #fff;
+        color: #fff;
+        text-align: center;
+        border-radius: 50%;
+        line-height: 50px;
+        box-sizing: content-box;
+    }
+
+#modifyTasks table {
+    text-align: center;
+}
+
+#modifyTasks tbody img {
+    width: 5vh;
+    height: 5vh;
+}
+
+#modifyTasks tbody tr {
+    line-height: 5vh;
+}

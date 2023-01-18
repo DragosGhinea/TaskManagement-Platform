@@ -1,0 +1,44 @@
+﻿@model ProiectTaskManagement.Models.Entities.Comment
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body{
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+</style>
+
+<div class="formular-background"></div>
+
+<h2 class="text-center mt-5">Edit Comment</h2>
+<br />
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+
+            @using (Html.BeginForm(actionName: "Edit", controllerName: "Comments",
+            method: FormMethod.Post))
+            {
+                @Html.HiddenFor(c => c.ProjectId);
+
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                @Html.Label("Content", "Comment Content")
+                <br />
+                @Html.TextArea("Content", null, new { @class = "form-control" })
+
+                @Html.ValidationMessageFor(m => m.Content, "", new { @class = "text-danger" })
+
+                <br />
+                <br />
+
+                <button type="submit" asp-route-commentId="@Model.CommentId" class="btn btn-success" type="submit">Save Modifications</button>
+                @Html.ActionLink("Back to Comments", "Show", "Tasks", new {@projectId = Model.ProjectId, @taskId = Model.TaskId}, new {@class="btn btn-primary"})
+
+            }
+
+        </div>
+    </div>
+</div>

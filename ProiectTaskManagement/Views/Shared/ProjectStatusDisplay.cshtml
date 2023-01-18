@@ -1,0 +1,29 @@
+﻿@model ProiectTaskManagement.Models.Entities.Status;
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Statuses",
+method: FormMethod.Post, new {@id="edit-status-form"}))
+{
+    <input type="hidden" name="projectId" value="@Model.ProjectId" />
+    <input type="hidden" name="statusId" value="@Model.Id" />
+
+    <div>
+    @Html.TextBox("Name", null, new { @class = "form-control", @style="min-width: 100px; width: 10vw;"})
+    @Html.Label("Name", "Status Name")
+    </div>
+
+    <div>
+    @Html.TextBox("Color", null, new {@type="color", @class="form-control form-control-color", @title="Choose your color"})
+    <label>Status Color</label>
+    </div>
+
+    <div>
+    <button class="btn btn-success" type="submit">Save Modifications</button>
+    </div>
+
+    <div>
+        <button data-bs-id="@Model.Id" data-bs-status="@Model.Name" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteStatus">
+            <i class="bi bi-trash3"></i> Delete
+        </button>
+    </div>
+
+}

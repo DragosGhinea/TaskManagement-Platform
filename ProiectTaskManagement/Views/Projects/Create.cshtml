@@ -1,0 +1,54 @@
+﻿@model ProiectTaskManagement.Models.Entities.Project
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.TitluSelectUsers = "Project Team";
+}
+
+<style>
+    body{
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+</style>
+
+@if (ViewBag.MesajEroareEchipa != null){
+    <div class="alert alert-danger my-danger-alert" role="alert">
+        @ViewBag.MesajEroareEchipa <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<div class="formular-background"></div>
+<h2 class="text-center mt-5">Create a new project</h2>
+<br />
+<div class="formular container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+
+            @using (Html.BeginForm(actionName: "Create", controllerName: "Projects",
+            method: FormMethod.Post, new {@id="create-project-form"}))
+            {
+
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                @Html.Label("Title", "Project Title")
+                <br />
+                @Html.TextBox("Title", null, new { @class = "form-control" })
+
+                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+
+                <br />
+
+                
+                <partial name="SelectUsers" model="Model"/>
+
+                <br />
+                <br />
+
+                <button class="btn btn-success" type="submit">+ Project</button>
+
+                @Html.ActionLink("Project List", "Index", "Projects", null, new {@class="btn btn-primary"})
+            }
+            
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+﻿.projects-container > .row {
+    gap: 7vw;
+}
+
+.my-projects-list, .other-projects-list {
+    overflow: auto;
+    height: 45vh;
+    padding: 2vw;
+}
+
+.projects-container > .row > .col-sm {
+    /*box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;*/
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    padding-left: 3vw;
+    border-radius: 15px;
+    padding-right: 3vw;
+}
+
+.vertical-line{
+    display: none;
+}
+
+@media screen and (min-width: 576px) {
+    .vertical-line {
+        width: 1px;
+        border-left: 2px solid grey;
+        height: 70vh;
+        top: 50%;
+        transform: translate(0, -50%);
+        position: absolute;
+        left: 50%;
+        display: inline-block;
+    }
+}

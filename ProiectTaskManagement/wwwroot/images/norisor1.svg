@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 543.52 275.88">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#New_Gradient_Swatch_2);
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 3px;
+      }
+
+      .cls-2 {
+        fill: url(#New_Gradient_Swatch_2-2);
+      }
+    </style>
+    <linearGradient id="New_Gradient_Swatch_2" data-name="New Gradient Swatch 2" x1="125.18" y1="254.89" x2="232.16" y2="254.89" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#bdbdbd"/>
+      <stop offset="1" stop-color="#4f4f4f"/>
+    </linearGradient>
+    <linearGradient id="New_Gradient_Swatch_2-2" data-name="New Gradient Swatch 2" x1="1.5" y1="98.96" x2="542.02" y2="98.96" xlink:href="#New_Gradient_Swatch_2"/>
+  </defs>
+  <g id="Object">
+    <g>
+      <path class="cls-1" d="M144.67,274.38c-10.72,0-19.49-8.77-19.49-19.49s8.77-19.49,19.49-19.49h68c10.72,0,19.49,8.77,19.49,19.49s-8.77,19.49-19.49,19.49h-68Z"/>
+      <path class="cls-2" d="M521.61,79.47H241.3c-10.76,0-19.49-8.73-19.49-19.49s8.73-19.49,19.49-19.49h88.74c10.16,0,19.29-7.38,20.31-17.49,1.17-11.61-8.01-21.49-19.39-21.49H149.47c-10.16,0-19.29,7.38-20.31,17.49-1.17,11.61,8.01,21.49,19.39,21.49h14.78c10.76,0,19.49,8.73,19.49,19.49s-8.73,19.49-19.49,19.49H21.91c-10.16,0-19.29,7.38-20.31,17.49-1.17,11.61,8.01,21.49,19.39,21.49-4.77,0,195.12,0,259.32,0,10.76,0,19.46,8.73,19.46,19.49s-8.73,19.49-19.49,19.49H150.85c-10.16,0-19.29,7.38-20.31,17.49-1.17,11.61,8.01,21.49,19.39,21.49H423.11c10.16,0,19.28-7.37,20.31-17.48,1.18-11.61-8-21.5-19.39-21.5h-65.78c-10.76,0-19.49-8.73-19.49-19.49s8.74-19.49,19.51-19.49c89.53,0,167,0,164.27,0,11.38,0,20.56-9.88,19.39-21.49-1.02-10.11-10.14-17.49-20.31-17.49Z"/>
+    </g>
+  </g>
+</svg>

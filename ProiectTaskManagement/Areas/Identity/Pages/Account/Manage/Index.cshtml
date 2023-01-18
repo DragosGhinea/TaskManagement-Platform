@@ -1,0 +1,53 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Username" class="form-control" disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </form>
+
+        <h3 class="mt-5">Profile Picture</h3>
+        <style>
+            .pfp {
+                height: 20vh;
+                width: 20vh;
+                border: 2px solid grey;
+                padding: 5px;
+                margin-bottom: 3vh;
+                object-fit:scale-down;
+                object-position: center;
+            }
+        </style>
+        <img class="pfp" src="/@ViewData["ProfileImg"]" />
+        <form method="post" enctype="multipart/form-data" asp-controller="AppUsers" asp-action="UpdateProfilePicture">
+
+            <input class="form-control" type="file" name="newPfp" />
+            <br />
+            <input class="btn btn-success" type="submit" value="Upload" />
+
+            <a class="btn btn-danger" asp-action="DeleteProfilePicture" asp-controller="AppUsers" ><i class="bi bi-trash3"></i> Delete Current Picture</a>
+        </form>
+        <a href="http://www.freepik.com">Default Profile Pictures Designed by Freepik</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,292 @@
+﻿@model ProiectTaskManagement.Models.Entities.Task
+@{
+    ViewData["Title"] = "Show";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string TimpTrecut(DateTime data){
+        TimeSpan span = DateTime.Now.Subtract(data);
+        string deReturnat = "";
+
+        if (span.Days != 0)
+            deReturnat += span.Days == 1 ? " 1 Day" : span.Days + " Days";
+
+        if (span.Hours != 0)
+            deReturnat += span.Hours == 1 ? " 1 Hour" : " "+span.Hours + " Hours";
+
+        if (span.Minutes != 0)
+            deReturnat += span.Minutes == 1 ? " 1 Minute" : " " + span.Minutes + " Minutes";
+
+        if (deReturnat == "")
+            deReturnat = "Not long";
+        return deReturnat;
+    }
+
+    string GetAuthor(ProiectTaskManagement.Models.Entities.AppUser? appUser)
+    {
+        if (appUser == null)
+            return "[Removed User]";
+        else
+            return appUser.UserName;
+    }
+}
+
+<style>
+    .comment-container{
+        position: relative;
+        margin: 20px;
+    }
+
+    .comment-container>.comment{
+        margin: 0px;
+        margin-top: 100px;
+    }
+
+    .comment{
+        box-shadow: 5px 6px 6px 2px #e9ecef;
+        border: 1px solid #e9ecef;
+        margin: 20px;
+        padding: 15px;
+        background-color: white;
+        position: relative;
+        border-radius: 8px;
+        z-index: 3;
+    }
+
+    .comment>h6, .reply-to>h6{
+        display: inline-block;
+    }
+
+    .comment>p{
+        margin: 10px;
+    }
+
+    .comment-container>.comment{
+        margin-left: 30px;
+    }
+
+    .reply-to{
+        background-color: #1bc48c;
+        border-radius: 20px;
+        padding: 10px;
+        opacity: 0.7;
+        display: inline-block;
+        position: absolute;
+        z-index: 1;
+        top: -65px;
+        max-width: 90%;
+    }
+
+    .reply-to>p{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    body{
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+
+    .comments-box{
+        overflow: auto;
+        height: 70%;
+    }
+
+    .reply-button{
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        font-size: 18px;
+        transform: translate(25%, -25%);
+    }
+</style>
+
+<script>
+    function createReply(button, commentId){
+        var commentBox = button.parentElement;
+        var user=commentBox.querySelector("h6");
+        var timp=commentBox.querySelector("small");
+        var continut=commentBox.querySelector("p");
+
+        var replyBox = document.getElementById("new-reply-to");
+        var userReply = replyBox.querySelector("h6");
+        userReply.innerText=user.innerText;
+        var timpReply = replyBox.querySelector("small");
+        timpReply.innerText=timp.innerText;
+        var continutReply = replyBox.querySelector("p");
+        continutReply.innerText=continut.innerText;
+
+        var commentIdForm = document.getElementById("commentIdForm");
+        commentIdForm.value=commentId;
+
+        replyBox.style.display = "block";
+    }
+
+    function cancelReply(button){
+        var commentIdForm = document.getElementById("commentIdForm");
+        commentIdForm.value="null";
+
+        document.getElementById("new-reply-to").style.display = "none";
+    }
+</script>
+
+@if (TempData["Eroare"] != null)
+{
+    <div class="alert alert-danger my-danger-alert" role="alert">
+        @Html.Raw(TempData["Eroare"]) <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert my-success-alert" role="alert">
+        @TempData["Success"] <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<div class="formular-background"></div>
+
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Are you sure?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                This action will remove the comment permanently.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete" asp-controller="Comments">
+                    <input id="deleteCommentId" type="hidden" name="commentId" />
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteConfirmModal = document.getElementById('confirmDelete');
+    const deleteConfirmCommentId = document.getElementById('deleteCommentId');
+
+    deleteConfirmModal.addEventListener('show.bs.modal', event => {
+
+        const button = event.relatedTarget
+
+        const deSters = button.getAttribute('data-bs-id')
+
+        deleteConfirmCommentId.value = deSters;
+    });
+</script>
+
+
+<h2 class="text-center mt-5">Task @Model.Title</h2>
+<h6 class="text-center text-muted">Created for Project @Model.Project.Title <br />on @Model.StartDate</h6>
+<center>
+    <a class="btn btn-primary" asp-action="Show" asp-controller="Projects" asp-route-projectId="@Model.ProjectId">
+        <i class="bi bi-eye"></i>
+        Go to Project
+    </a>
+</center>
+<br />
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="text-muted card-title mb-3"><i class="bi bi-list-task"></i> Task Description</h5>
+
+                    <div class="card-text descriere">
+                        @Html.Raw(Model.Description)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 offset-3 mt-5">
+            <h4 class="card-title">Comments</h4>
+            @if(ViewBag.CacheComments.Count == 0){
+                <h5 class="text-muted mt-3">There are no comments yet</h5>
+            }
+            else{
+                <div class="comments-box">
+                @foreach (ProiectTaskManagement.Models.Entities.Comment comm in ViewBag.CacheComments)
+                {
+                    @if (comm.Parent != null)
+                    {
+                        <div class="comment-container">
+                            <div class="reply-to">
+                                <h6>@GetAuthor(@comm.Parent.AppUser)</h6> <small>@TimpTrecut(comm.Parent.CreationDate) ago</small>
+                                <p class="card-text">@comm.Parent.Content</p>
+                                <br>
+                            </div>
+                            <div class="comment">
+                                <button onclick="createReply(this, '@comm.CommentId')" class="btn btn-primary reply-button"><i class="bi bi-reply"></i></button>
+                                    <h6>Reply to @GetAuthor(@comm.Parent.AppUser) | @GetAuthor(@comm.AppUser)</h6> <small class="text-muted">@TimpTrecut(comm.CreationDate) ago</small>
+                                <p class="card-text">@comm.Content</p>
+                                    @if (ViewBag.UserId == null || ViewBag.UserId == comm.AppUserId)
+                                    {
+                                        <div>
+                                            <button data-bs-id="@comm.CommentId" data-bs-toggle="modal" data-bs-target="#confirmDelete" class="btn btn-danger"><i class="bi bi-trash3"></i> Delete</button>
+                                            <a asp-action="Edit" asp-controller="Comments" asp-route-commentId="@comm.CommentId" class="text-white btn btn-info">Edit</a>
+                                        </div>
+                                    }
+                                </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="comment mt-5">
+                            <button onclick="createReply(this, '@comm.CommentId')" class="btn btn-primary reply-button"><i class="bi bi-reply"></i></button>
+                            <h6>@GetAuthor(comm.AppUser)</h6> <small class="text-muted">@TimpTrecut(comm.CreationDate) ago</small>
+                            <p class="card-text">@comm.Content</p>
+                            @if (ViewBag.UserId == null || ViewBag.UserId == comm.AppUserId)
+                            {
+                                <div>
+                                        <button data-bs-id="@comm.CommentId" data-bs-toggle="modal" data-bs-target="#confirmDelete" class="btn btn-danger"><i class="bi bi-trash3"></i> Delete</button>
+                                        <a asp-action="Edit" asp-controller="Comments" asp-route-commentId="@comm.CommentId" class="text-white btn btn-info">Edit</a>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                </div>
+                <script>
+                    const commentsBox = document.querySelector('.comments-box');
+                    commentsBox.scrollTo(0, commentsBox.scrollHeight);
+                </script>
+            }
+
+            <div id="new-comment">
+                <form asp-action="Create" asp-controller="Comments">
+                    <div id="new-reply-to" style="display: none;">
+                        <h4>Replying to</h4>
+                        <div class="comment">
+                            <button type="button" onclick="cancelReply(this)"class="btn btn-secondary reply-button"><i class="bi bi-x-lg"></i></button>
+                            <h6></h6> <small class="text-muted"></small>
+                            <p class="card-text" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"></p>
+                        </div>
+                        <input id="commentIdForm" type="hidden" name="RepliedTo" value="null" />
+                        <input type="hidden" name="projectId" value="@Model.ProjectId" />
+                        <input type="hidden" name="taskId" value="@Model.Id" />
+                    </div>
+                    <textarea name="Continut" class="form-control mt-3" rows="4" placeholder="Your new comment here..."></textarea>
+                    <button type="submit" class="btn btn-success mt-3"><i class="bi bi-send"></i> Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+    </div>
+</div>
+

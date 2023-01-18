@@ -1,0 +1,127 @@
+﻿@model ProiectTaskManagement.Models.Entities.Project
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body{
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+
+    .edit-status>form{
+        display: flex;
+        flex-direction: row;
+        align-content: space-around;
+        justify-items: baseline;
+        justify-content: baseline;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+</style>
+
+@if (TempData["Eroare"] != null){
+    <div class="alert alert-danger my-danger-alert" role="alert">
+        @Html.Raw(TempData["Eroare"]) <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert my-success-alert" role="alert">
+        @TempData["Success"] <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDeleteStatus" tabindex="-1" aria-labelledby="confirmDeleteStatus" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Are you sure?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete" asp-controller="Statuses">
+                    <input type="hidden" name="projectId" value="@Model.Id" />
+                    <input id="deleteStatusId" type="hidden" name="statusId" />
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteConfirmModal = document.getElementById('confirmDeleteStatus');
+    const deleteConfirmStatusId = document.getElementById('deleteStatusId');
+
+    deleteConfirmModal.addEventListener('show.bs.modal', event => {
+
+        const button = event.relatedTarget
+
+        const deSters = button.getAttribute('data-bs-id')
+        const displayName = button.getAttribute('data-bs-status')
+
+
+        const modalBody = deleteConfirmModal.querySelector('.modal-body')
+        deleteConfirmStatusId.value = deSters;
+
+        modalBody.innerHTML = 'This action will permanently remove the status <b>' + displayName + "</b>."
+    });
+</script>
+
+<div class="formular-background"></div>
+
+<h2 class="text-center mt-5">Statuses of Project @Model.Title</h2>
+<center>
+    <a class="btn btn-primary" asp-action="Show" asp-controller="Projects" asp-route-projectId="@Model.Id">
+        <i class="bi bi-eye"></i>
+        Go to Project
+    </a>
+</center>
+<br />
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <br />
+
+            @if(Model.Statuses.Count == 0)
+            {
+                <h3 class="mt-5">There are no statuses, you might want to add some.</h3>
+            }
+
+            @foreach (var status in Model.Statuses)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><span style="background-color: @status.Color;" class="badge statusTask">@status.Name</span></h5>
+                        <h6 class="card-subtitle text-muted">@status.Color</h6>
+
+                        <div class="edit-status mt-5">
+                            <partial name="ProjectStatusDisplay" model="status">
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-6 offset-3">
+           <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">New Status | <span class="badge text-white" style="background-color: black;" id="status-preview"></span></h5>
+                        <h6 class="card-subtitle text-muted">Enter data for a new status</h6>
+
+                        <div class="edit-status mt-5">
+                            <partial name="NewProjectStatusForm" model="ViewBag.NewStatus">
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@model ProiectTaskManagement.Models.Entities.Project
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.TitluSelectUsers = "Project Team";
+}
+
+<style>
+    body{
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+</style>
+
+@if (TempData["Eroare"] != null)
+{
+    <div class="alert alert-danger my-danger-alert" role="alert">
+        @TempData["Eroare"] <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+@if(ViewBag.Eroare != null)
+{
+    <div class="alert alert-danger my-danger-alert" role="alert">
+        @ViewBag.Eroare <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<div class="formular-background"></div>
+
+<h2 class="mt5 text-center">Add Members to Project @Model.Title</h2>
+<br />
+<div class="formular container">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <p class="text-center mb-5">Members you select here will be added to the project's team</p>
+            @using (Html.BeginForm(actionName: "Create", controllerName: "TeamMembers",
+            method: FormMethod.Post, new {@id="create-project-form"}))
+            {
+                <partial name="SelectUsers" model="Model" />
+
+                <button class="mt-5 btn btn-success" type="submit">+ Members</button>
+
+                @Html.ActionLink("Go to team", "Index", "TeamMembers", new {@projectId=Model.Id}, new {@class="mt-5 btn btn-primary"})
+            }
+        </div>
+    </div>
+</div>

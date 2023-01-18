@@ -1,0 +1,26 @@
+﻿@model ProiectTaskManagement.Models.Entities.Task
+
+<h5 class="card-title">
+    @if(ViewBag.IsAssigned){
+        <i class="bi bi-bookmark-fill"></i>
+    }
+    @Model.Title</h5>
+<br />
+@if (Model.EndDate != null)
+{
+    <h6 class="card-subtitle text-muted">Until @Model.EndDate</h6>
+}
+else
+{
+    <h6 class="card-subtitle text-muted">No deadline specified</h6>
+}
+<br />
+<p class="card-text">@Html.Raw(@Model.Description)</p>
+<br />
+@if(DateTime.Now < Model.StartDate)
+{
+    <small class="text-muted">Starts on @Model.StartDate</small>
+}
+else{
+    <small class="text-muted">Started on @Model.StartDate</small>
+}

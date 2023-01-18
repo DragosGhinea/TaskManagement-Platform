@@ -1,0 +1,121 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body{
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+
+    .pfp-img {
+        width: 6vw;
+        height: 6vw;
+        position: absolute;
+        right: 1vw;
+    }
+</style>
+
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Are you sure?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete" asp-controller="AppUsers">
+                    <input id="deleteMemberId" type="hidden" name="appUserId" />
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteConfirmModal = document.getElementById('confirmDelete');
+    const deleteConfirmMemberId = document.getElementById('deleteMemberId');
+
+    deleteConfirmModal.addEventListener('show.bs.modal', event => {
+
+        const button = event.relatedTarget
+
+        const deSters = button.getAttribute('data-bs-id')
+        const displayName = button.getAttribute('data-bs-username')
+
+
+        const modalBody = deleteConfirmModal.querySelector('.modal-body')
+        deleteConfirmMemberId.value = deSters;
+
+        modalBody.innerHTML = 'This action will remove <b>'+displayName+"</b>. They can create another account afterwards."
+    });
+</script>
+
+<div class="formular-background"></div>
+<h2 class="text-center mt-5">All Users</h2>
+<br />
+<div class="formular container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <div>
+                    <form method="get">
+                        <div class="input-group" style="width: 20vw; min-width: 200px;">
+                            <input type="text" class="form-control" placeholder="Search by name/username/email" name="search" value="@ViewBag.Search" />
+                            <button class="btn btn-primary" type="submit"><i class="bi-info bi-search"></i></button>
+                        </div>
+                    </form>
+                <nav aria-label="Projects List">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@ViewBag.BaseUrl=1" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        @for (int i = 1; i <= ViewBag.lastPage; i++)
+                        {
+                            @if (i == ViewBag.currentPage)
+                            {
+                                        <li class="page-item active">
+                                            <a class="page-link" href="@ViewBag.BaseUrl=@i">@(i)</a>
+                                        </li>
+                            }
+                            else
+                            {
+                                         <li class="page-item">
+                                            <a class="page-link" href="@ViewBag.BaseUrl=@i">@(i)</a>
+                                        </li>
+                            }
+                        }
+
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@ViewBag.BaseUrl=@(ViewBag.lastPage)" arialabel="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            @foreach (var usr in ViewBag.Users)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <img class="rounded-circle pfp-img" src="/@usr.GetProfilePicture()">
+                        <partial name="AppUserDetails" model="usr" />
+                        <button data-bs-id="@usr.Id" data-bs-username="@usr.UserName" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
+                            <i class="bi bi-trash3"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

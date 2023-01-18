@@ -1,0 +1,35 @@
+﻿@model ProiectTaskManagement.Models.Entities.Project
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Title</h5>
+        <h6 class="card-subtitle text-muted">
+            Lead by
+            @foreach (var member in Model.TeamLeadersCache.SkipLast(1))
+            {
+                @member.AppUser.UserName@:,
+            }
+            @Model.TeamLeadersCache.Last().AppUser.UserName
+        </h6>
+        <br />
+        <p class="card-text">Project has @Model.MemberCount members.</p>
+        @if ((ViewData["ViewButton"] as bool?) == true)
+        {
+            @Html.ActionLink("View", "Show", "Projects", new {@projectId = Model.Id}, new {@class="btn btn-primary"})
+        }
+
+        @if ((ViewData["EditButton"] as bool?) == true)
+        {
+            @Html.ActionLink("Edit", "Edit", "Projects", new {@projectId = Model.Id}, new {@class="btn btn-primary"});
+        }
+        @if ((ViewData["DeleteButton"] as bool?) == true)
+        {
+            <button data-bs-id="@Model.Id" data-bs-name="@Model.Title" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
+                <i class="bi bi-trash3"></i> Delete
+            </button>
+        }
+
+        <br /><br />
+        <small class="text-muted">Created on @Model.CreationDate</small>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+﻿<style>
+    #listaUseri>li{
+        margin-bottom: 5px;
+        cursor: pointer;
+    }
+    
+    #listaUseri{
+        list-style-image: url(/images/person-fill.svg);
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+        <h3>@ViewBag.TitluSelectUsers</h3>
+
+        <ul id="listaUseri">
+            @foreach (var user in ViewBag.MemberList)
+            {
+                <li onclick="this.remove()">@user (Click to remove)<input type="hidden" name="MemberList" value="@user"/></li>
+            }
+        </ul>
+        <br />
+        <label>Add User</label>
+        <br />
+        <input type="text" id="adaugaUser" placeholder="Email/Username"/>
+        <br />
+        <small class="form-text text-muted">
+            The users you add here will be part of your team.<br />
+            The member list can be modified afterwards if needed.
+        </small>
+    </div>
+</div>
+
+
+<script>
+    $('#adaugaUser').change(function (event) {
+        var numeSauEmail = event.target.value;
+        if(numeSauEmail=="")
+            return;
+
+        numeSauEmail = numeSauEmail.replaceAll(" ", "");
+        var useri = document.getElementById("listaUseri");
+        var user = document.createElement("li");
+        var userInput = document.createElement("input");
+        userInput.setAttribute('name', 'MemberList');
+        userInput.setAttribute('type', 'hidden');
+        userInput.value = numeSauEmail;
+        user.innerText = numeSauEmail+" (Click to remove)";
+        user.appendChild(userInput);
+        useri.appendChild(user);
+        user.addEventListener('click', event => {
+            useri.removeChild(user);
+        });
+        event.target.value = "";
+    });
+
+    $("#adaugaUser").on("keypress", function (event){
+        var keyPressed = event.keyCode || event.which;
+        if(keyPressed == 13) //enter
+        {
+            var numeSauEmail = event.target.value;
+            if(numeSauEmail=="")
+                return;
+
+            numeSauEmail = numeSauEmail.replaceAll(" ", "");
+            var useri = document.getElementById("listaUseri");
+            var user = document.createElement("li");
+            var userInput = document.createElement("input");
+            userInput.setAttribute('name', 'MemberList');
+            userInput.setAttribute('type', 'hidden');
+            userInput.value = numeSauEmail;
+            user.innerText = numeSauEmail+" (Click to remove)";
+            user.appendChild(userInput);
+            useri.appendChild(user);
+            user.addEventListener('click', event => {
+                useri.removeChild(user);
+            });
+            event.target.value = "";
+            event.preventDefault();
+            return false;
+        }
+    });
+</script>
+

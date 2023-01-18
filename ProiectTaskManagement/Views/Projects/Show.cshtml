@@ -1,0 +1,448 @@
+﻿
+@model ProiectTaskManagement.Models.Entities.Project
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string UserDataBuilder(ProiectTaskManagement.Models.Entities.AppUser user)
+    {
+        string deReturnat = "";
+        deReturnat += "\"" + user.Id + "\": {";
+        deReturnat += "username: '" + user.UserName + "',";
+        deReturnat += "email: '" + user.Email + "',";
+        deReturnat += "profileImg: '" + user.GetProfilePicture().Replace("\\", "/") + "'";
+        deReturnat += "}";
+        return deReturnat;
+    }
+
+    string DictBuilder(){
+        string deReturnat = "{";
+        foreach (var task in Model.Tasks.SkipLast(1))
+        {
+            deReturnat += task.Id + ": {";
+            foreach(var assign in task.TaskAssigns.SkipLast(1))
+            {
+                deReturnat += UserDataBuilder(assign.TeamMember.AppUser) + ",";
+            }
+
+            if (task.TaskAssigns.Count > 0)
+            {
+                deReturnat += UserDataBuilder(task.TaskAssigns.Last().TeamMember.AppUser);
+
+            }
+            deReturnat += "},";
+        }
+        if(Model.Tasks.Count > 0)
+        {
+            var task = Model.Tasks.Last();
+            deReturnat += task.Id + ": {";
+            foreach(var assign in task.TaskAssigns.SkipLast(1))
+            {
+                deReturnat += UserDataBuilder(assign.TeamMember.AppUser) + ",";
+            }
+
+            if (task.TaskAssigns.Count > 0)
+            {
+                deReturnat += UserDataBuilder(task.TaskAssigns.Last().TeamMember.AppUser);
+
+            }
+            deReturnat += "}";
+        }
+        deReturnat += "}";
+        return deReturnat;
+    };
+
+    string UserListBuilder()
+    {
+        string toReturn = "{";
+        foreach(var member in Model.TeamMembers.SkipLast(1))
+        {
+            toReturn += UserDataBuilder(member.AppUser)+",";
+        }
+        toReturn += UserDataBuilder(Model.TeamMembers.Last().AppUser);
+        toReturn += "}";
+        return toReturn;
+    }
+}
+
+<link rel="stylesheet" href="/css/showProject.css">
+ 
+@if (TempData["Success"] != null)
+{
+    <div class="alert my-success-alert" role="alert">
+        @TempData["Success"] <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<div class="modal fade" id="modifyTasks" tabindex="-1" aria-labelledby="modifyTasks" aria-hidden="true">
+    <form method="post" asp-action="Assign" asp-controller="Tasks">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="hidden" name="projectId" value="@Model.Id"/>
+                <input type="hidden" name="taskId" id="taskIdParameter" />
+                <h1 class="modal-title fs-5">%Title%</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="remove-users-section">
+                    @if (ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+                    {
+                        <h3>Select users to remove from task</h3>
+                    }
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">UserName</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Profile Image</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ToDeleteMembers">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+                {
+                    <br />
+                    <h3>Select users to add to task</h3>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">UserName</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Profile Image</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ToAddMembers">
+
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                @if(ViewBag.IsLeader == null || ViewBag.IsLeader == true){
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                }
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+<script>
+    const userList = @Html.Raw(UserListBuilder())
+    const userData = @Html.Raw(DictBuilder())
+    const taskIdParameter = document.getElementById('taskIdParameter');
+
+    const taskModal = document.getElementById('modifyTasks')
+    taskModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget
+
+        const taskId = button.getAttribute('data-bs-taskId')
+        taskIdParameter.value=taskId;
+        const taskDisplayName = button.getAttribute('data-bs-taskName')
+
+        const modalTitle = taskModal.querySelector('.modal-title')
+        const tableBodyRemove = document.getElementById("ToDeleteMembers");
+        const tableBodyAdd = document.getElementById("ToAddMembers");
+
+        modalTitle.textContent = `Members Assigned To ${taskDisplayName}`
+        tableBodyRemove.innerHTML= '';
+        const tableBodyRemoveDiv = document.getElementById("remove-users-section");
+        if(Object.keys(userData[taskId]).length==0){
+            tableBodyRemoveDiv.style.display="none";
+        }
+        else{
+            tableBodyRemoveDiv.style.display="block";
+        }
+        let userListCopy = JSON.parse(JSON.stringify(userList));
+        for(const [key,value] of Object.entries(userData[taskId])){
+            delete userListCopy[key];
+            var newTr = document.createElement("tr");
+            var newTd = document.createElement("td");
+            if(tableBodyAdd!=null){
+                var input = document.createElement("input");
+                input.type="checkbox";
+                input.name = "MembersToRemove";
+                input.style.transform="scale(1.7)";
+                input.value = key;
+                newTd.appendChild(input);
+            }
+            //newTd.innerText = key;
+            newTr.appendChild(newTd);
+
+            var newTd = document.createElement("td");
+            newTd.innerText = value.username;
+            newTr.appendChild(newTd);
+
+            var newTd = document.createElement("td");
+            newTd.innerText = value.email;
+            newTr.appendChild(newTd);
+
+            var newTd = document.createElement("td");
+            var newImg = document.createElement("img");
+            newImg.src = "/"+value.profileImg;
+            newImg.classList.add("modal-img");
+            newImg.classList.add("rounded-circle");
+            newTd.appendChild(newImg);
+            newTr.appendChild(newTd);
+
+            tableBodyRemove.appendChild(newTr);
+        }
+
+ 
+        if(tableBodyAdd!=null){
+            tableBodyAdd.innerHTML = '';
+            for(const [key,value] of Object.entries(userListCopy)){
+                var newTr = document.createElement("tr");
+                var newTd = document.createElement("td");
+                //newTd.innerText = key;
+                var input = document.createElement("input");
+                input.type = "checkbox";
+                input.style.transform = "scale(1.7)";
+                input.name = "MembersToAdd";
+                input.value = key;
+                newTd.appendChild(input);
+                newTr.appendChild(newTd);
+
+                var newTd = document.createElement("td");
+                newTd.innerText = value.username;
+                newTr.appendChild(newTd);
+
+                var newTd = document.createElement("td");
+                newTd.innerText = value.email;
+                newTr.appendChild(newTd);
+
+                var newTd = document.createElement("td");
+                var newImg = document.createElement("img");
+                newImg.src = "/"+value.profileImg;
+                newImg.classList.add("modal-img");
+                newImg.classList.add("rounded-circle");
+                newTd.appendChild(newImg);
+                newTr.appendChild(newTd);
+
+                tableBodyAdd.appendChild(newTr);
+            }
+        }
+    })
+</script>
+
+<h2 class="text-center mt-5">Displaying Project @Model.Title</h2>
+<br />
+<div class="container">
+    <div class="row justify-content-around align-items-start">
+        <div class="card" style="padding: 0px; width: 18rem;">
+            <div class="card-header">
+                Team
+            </div>
+            <ul class="list-group list-group-flush " style="overflow:auto; max-height: 20vh">
+                @foreach (var membru in Model.TeamMembers)
+                {
+                    <li class="list-group-item">@membru.AppUser.UserName 
+                        @if (membru.IsTeamLeader())
+                        {
+                            <span class="badge bg-primary">Leader</span>
+                        }
+                    </li>
+                }
+            </ul>
+            <div class="card-footer">
+                <a class="btn btn-primary" asp-action="Index" asp-controller="TeamMembers" asp-route-projectId="@Model.Id">
+                    @if(ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+                    {
+                        @:View/Edit Team
+                    }
+                    else
+                    {
+                        @:View Team
+                    }
+                </a>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 0px; width: 18rem;">
+
+            <div class="card-header">
+                Available Statuses
+            </div>
+            <ul class="list-group list-group-flush" style="overflow:auto; max-height: 20vh">
+                @foreach (var status in Model.Statuses)
+                {
+                    <li class="list-group-item">
+                        <h6 class="text-center"><span style="background-color: @status.Color;" class="badge">@status.Name</span></h6>
+                    </li>
+                }
+            </ul>
+            @if (ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+            {
+                <div class="card-footer">
+                    <a class="btn btn-primary" asp-action="Index" asp-controller="Statuses" asp-route-projectId="@Model.Id">Edit Statuses</a>
+            </div>
+            }
+        </div>
+    </div>
+
+
+    <hr class="task-separator mb-5 mt-5"/>
+
+     @if(ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+    {
+        <center>
+        <a class="btn btn-primary mb-5" asp-action="Create" asp-controller="Tasks" asp-route-projectId="@Model.Id">
+            <i class="bi bi-plus-square"></i>
+            Add Task
+        </a>
+        </center>
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirmDeleteTask" tabindex="-1" aria-labelledby="confirmDeleteTask" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Are you sure?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="post" asp-action="Delete" asp-controller="Tasks">
+                            <input type="hidden" name="projectId" value="@Model.Id" />
+                            <input id="deleteTaskId" type="hidden" name="taskId" />
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+                const deleteConfirmModal = document.getElementById('confirmDeleteTask');
+                const deleteConfirmTaskId = document.getElementById('deleteTaskId');
+
+                deleteConfirmModal.addEventListener('show.bs.modal', event => {
+
+                    const button = event.relatedTarget
+
+                    const deSters = button.getAttribute('data-bs-id')
+                    const displayName = button.getAttribute('data-bs-task')
+
+
+                    const modalBody = deleteConfirmModal.querySelector('.modal-body')
+                    deleteConfirmTaskId.value = deSters;
+
+                    modalBody.innerHTML = 'This action will permanently remove task <b>'+displayName+"</b>."
+                });
+        </script>
+    }
+
+    <div class="tasks">
+        @if (Model.Tasks.Count() == 0)
+        {
+            <div>
+                <h1 class="text-center">... No Tasks? ...</h1>
+                <h4 class="text-center text-muted">More free time I guess</h4>
+            </div>
+        }
+
+        @foreach (var task in Model.Tasks)
+        {
+            ViewBag.IsAssigned = false;
+            @foreach (var assign in task.TaskAssigns)
+            {
+                if (assign.TeamMemberId == ViewBag.UserId)
+                {
+                    ViewBag.IsAssigned = true;
+                    break;
+                }
+            }
+
+            <div class="card col-md">
+                <div class="card-body d-flex task">
+                    <div class="statusTask">
+                        @if (ViewBag.IsLeader == null || ViewBag.IsLeader || ViewBag.IsAssigned)
+                        {
+                            <div class="dropdown">
+                                @if (task.Status == null)
+                                {
+                                    <button style="background-color: black;" class="text-white btn" type="button" id="taskDropdown-@task.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button style="background-color: @task.Status.Color;" class="text-white btn" type="button" id="taskDropdown-@task.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                }
+                                <ul class="dropdown-menu" aria-labelledby="taskDropdown-@task.Id">
+                                    @foreach (var status in Model.Statuses)
+                                    {
+                                        <li><a class="dropdown-item" asp-route-projectId="@Model.Id" asp-route-taskId="@task.Id" asp-route-newStatusId="@status.Id" asp-action="UpdateStatus" asp-controller="Tasks">@status.Name</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        @if (task.Status != null)
+                        {
+                            <span style="background-color: @task.Status.Color;" class="badge statusTask">@task.Status.Name</span>
+                        }
+                        else
+                        {
+
+                            <span class="badge" style="color: black; margin: 0px; padding: 0px;">No Status Set</span>
+                        }
+                    </div>
+                    @if(task.TaskAssigns.Count > 0)
+                    {
+                        <div class="avatar-group">
+                            @foreach(var tm in task.TaskAssigns.Take(3)){
+                                <div data-bs-toggle="modal" data-bs-target="#modifyTasks" data-bs-taskId="@task.Id" data-bs-taskName="@task.Title">
+                                    <img data-bs-toggle="tooltip" data-bs-placement="top" title="@tm.TeamMember.AppUser.UserName" class="rounded-circle" src="/@tm.TeamMember.AppUser.GetProfilePicture()" />
+                                </div>
+                            }
+                            @if(task.TaskAssigns.Count > 3)
+                            {
+                                <div data-bs-toggle="modal" data-bs-target="#modifyTasks" data-bs-taskId="@task.Id" data-bs-taskName="@task.Title">
+                                    <div class="more" data-bs-toggle="tooltip" data-bs-placement="top" title="And @(task.TaskAssigns.Count - 3) more...">+@(task.TaskAssigns.Count - 3)</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else if(ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+                    {
+                        <div class="avatar-group">
+                            <div data-bs-toggle="modal" data-bs-target="#modifyTasks" data-bs-taskId="@task.Id" data-bs-taskName="@task.Title">
+                                <div class="more" data-bs-toggle="tooltip" data-bs-placement="top" title="No users assigned..." style="font-size: 25px;"><i class="bi bi-person-fill-add"></i></div>
+                            </div>
+                        </div>
+                    }
+                    <partial name="TaskDetails" model="task" />
+                    @if(ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+                    {
+                        <br />
+                        <div>
+                            <a class="btn btn-info text-white" asp-action="Edit" asp-controller="Tasks" asp-route-projectId="@Model.Id" asp-route-taskId="@task.Id">
+                                Edit
+                            </a>
+
+                            <button data-bs-id="@task.Id" data-bs-task="@task.Title" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteTask">
+                                <i class="bi bi-trash3"></i> Delete
+                            </button>
+                        </div>
+                    }
+                    <br><br>
+                    <a class="btn btn-primary" href="/projects/@Model.Id/tasks/@task.Id">View Comments <span class="badge bg-light text-dark">@task.CountComments</span></a>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+

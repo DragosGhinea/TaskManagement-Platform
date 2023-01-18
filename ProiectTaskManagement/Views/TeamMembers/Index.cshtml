@@ -1,0 +1,334 @@
+﻿
+@model ProiectTaskManagement.Models.Entities.Project
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+
+    .pfp-img{
+        width: 7vw;
+        height: 7vw;
+        position: absolute;
+        right: 1vw;
+    }
+</style>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert my-success-alert" role="alert">
+        @TempData["Success"] <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Are you sure?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete" asp-controller="TeamMembers">
+                    <input type="hidden" name="projectId" value="@Model.Id" />
+                    <input id="deleteMemberId" type="hidden" name="memberId" />
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if(ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+{
+    <!-- Modal -->
+    <div class="modal fade" id="confirmMakeLeader" tabindex="-1" aria-labelledby="confirmMakeLeader" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Are you sure?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" asp-action="InviteLeader" asp-controller="TeamMembers">
+                        <input type="hidden" name="projectId" value="@Model.Id" />
+                        <input id="makeLeaderId" type="hidden" name="memberId" />
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ViewBag.IsLeader == null)
+{
+    <!-- Modal -->
+    <div class="modal fade" id="confirmDropAdmin" tabindex="-1" aria-labelledby="confirmDropAdmin" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Are you sure?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" asp-action="DropLeadership" asp-controller="TeamMembers">
+                        <input type="hidden" name="projectId" value="@Model.Id" />
+                        <input id="dropAdminLeaderId" type="hidden" name="projectLeaderId" />
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    const deleteConfirmModal = document.getElementById('confirmDelete');
+    const deleteConfirmMemberId = document.getElementById('deleteMemberId');
+
+    deleteConfirmModal.addEventListener('show.bs.modal', event => {
+
+        const button = event.relatedTarget
+
+        const deSters = button.getAttribute('data-bs-id')
+        const displayName = button.getAttribute('data-bs-username')
+
+
+        const modalBody = deleteConfirmModal.querySelector('.modal-body')
+        deleteConfirmMemberId.value = deSters;
+
+        modalBody.innerHTML = 'This action will remove <b>'+displayName+"</b> from the team."
+    });
+
+    @if(ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+    {
+        <text>
+            const makeLeaderModal = document.getElementById('confirmMakeLeader');
+            const makeLeaderConfirmMemberId = document.getElementById('makeLeaderId');
+
+            makeLeaderModal.addEventListener('show.bs.modal', event => {
+
+                const button = event.relatedTarget
+
+                const dePromovat = button.getAttribute('data-bs-id')
+                const displayName = button.getAttribute('data-bs-username')
+
+
+                const modalBody = makeLeaderModal.querySelector('.modal-body')
+                makeLeaderConfirmMemberId.value = dePromovat;
+
+                modalBody.innerHTML = 'This action will promote <b>'+displayName+"</b> to team leader."
+            });
+        </text>
+    }
+
+    @if(ViewBag.IsLeader == null)
+    {
+        <text>
+            const dropAdminLeaderModal = document.getElementById('confirmDropAdmin');
+            const dropAdminLeaderConfirmMemberId = document.getElementById('dropAdminLeaderId');
+
+            dropAdminLeaderModal.addEventListener('show.bs.modal', event => {
+
+                const button = event.relatedTarget
+
+                const deSters = button.getAttribute('data-bs-id')
+                const displayName = button.getAttribute('data-bs-username')
+
+
+                const modalBody = dropAdminLeaderModal.querySelector('.modal-body')
+                dropAdminLeaderConfirmMemberId.value = deSters;
+
+                modalBody.innerHTML = 'This action will remove the leadership of <b>'+displayName+"</b>."
+            });
+        </text>
+    }
+</script>
+
+@if (TempData["Eroare"] != null)
+{
+    <div class="alert alert-danger my-danger-alert" role="alert">
+        @TempData["Eroare"] <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<div class="formular-background"></div>
+
+<h2 class="text-center mt-5">Team of Project @Model.Title</h2>
+<center>
+    <a class="btn btn-primary" asp-action="Show" asp-controller="Projects" asp-route-projectId="@Model.Id">
+        <i class="bi bi-eye"></i>
+        Go to Project
+    </a>
+    @if(ViewBag.IsLeader == true)
+    {
+        <!-- Modal -->
+        <div class="modal fade" id="confirmDropLeadership" tabindex="-1" aria-labelledby="confirmDropLeadership" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Are you sure?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to drop leadership of the <b>@Model.Title</b> project?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="post" asp-action="DropLeadership" asp-controller="TeamMembers">
+                            <input type="hidden" name="projectId" value="@Model.Id" />
+                            <input type="hidden" name="projectLeaderId" value="@ViewBag.UserId" />
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDropLeadership">
+            <i class="bi bi-person-fill-down"></i> Drop Leadership
+        </button>
+    }
+    else if (ViewBag.IsLeader == false)
+    {
+        <!-- Modal -->
+        <div class="modal fade" id="confirmLeave" tabindex="-1" aria-labelledby="confirmLeave" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Are you sure?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to quit <b>@Model.Title</b> project and leave the team?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form method="post" asp-action="Leave" asp-controller="TeamMembers">
+                            <input type="hidden" name="projectId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmLeave">
+            <i class="bi bi-door-open"></i> Leave Team
+        </button>
+    }
+
+</center>
+<br />
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <h4>Team Leaders</h4>
+            <br />
+            <br />
+
+            @if (ViewBag.TeamLeaders.Count == 0)
+            {
+                <p>Kind of impossible, but there are no leaders.</p>
+            }
+            else
+            {
+                @foreach (ProiectTaskManagement.Models.Entities.TeamMember member in ViewBag.TeamLeaders)
+                {
+                    <div class="card">
+                        <div class="card-body">
+                            <img class="rounded-circle pfp-img" src="/@member.AppUser.GetProfilePicture()">
+                            <partial name="AppUserDetails" model="member.AppUser" /><br />
+                            @*<p class="card-text">Adaugat in echipa de @member.AdaugatDeUser.UserName</p><br />*@
+                            <small class="text-muted">Member since @member.JoinDate
+                                <br>
+                                User has @member.CommentsCountCache comments.
+                                <br>
+                                User has @member.TasksCountCache tasks assigned.
+                            </small>
+
+                            @if(ViewBag.IsLeader == null)
+                            {
+                                <br>
+                                <br>
+                                <button data-bs-id="@member.AppUserId" data-bs-username="@member.AppUser.UserName" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDropAdmin">
+                                    <i class="bi bi-person-fill-down"></i> Drop Leadership
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    <br />
+                }
+            }
+
+            <br /><br /><br />
+
+            <h4>Team Members</h4>
+            @if (ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+            {
+                <a class="btn btn-primary" asp-action="Create" asp-controller="TeamMembers" asp-route-projectId="@Model.Id">
+                    Add Members
+                </a>
+            }
+            <br />
+            <br />
+            @if (ViewBag.Members.Count == 0)
+            {
+                <p>No members yet.</p>
+            }
+            else
+            {
+                @foreach (ProiectTaskManagement.Models.Entities.TeamMember member in ViewBag.Members)
+                {
+                    <div class="card">
+                        <div class="card-body">
+                            <img class="rounded-circle pfp-img" src="/@member.AppUser.GetProfilePicture()">
+                            <partial name="AppUserDetails" model="member.AppUser" /><br />
+                            @if(member.AddedByUser!=null){
+                                <p class="card-text">Added by @member.AddedByUser.UserName</p><br />
+                            }
+                            <small class="text-muted">Member since @member.JoinDate
+                                <br>
+                                User has @member.CommentsCountCache comments.
+                                <br>
+                                User has @member.TasksCountCache tasks assigned.
+                            </small>
+                            @if (ViewBag.IsLeader == null || ViewBag.IsLeader == true)
+                            {
+                                <br>
+                                <br>
+                                <button data-bs-id="@member.AppUserId" data-bs-username="@member.AppUser.UserName" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDelete">
+                                    <i class="bi bi-trash3"></i> Delete
+                                </button>
+                                <button data-bs-id="@member.AppUserId" data-bs-username="@member.AppUser.UserName" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmMakeLeader">
+                                    <i class="bi bi-person-fill-up"></i> Make Leader
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    <br />
+                }
+            }
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,48 @@
+﻿@model ProiectTaskManagement.Models.Entities.Project
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body{
+        background: rgb(45,152,218);
+        background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    }
+</style>
+
+<div class="formular-background"></div>
+
+<h2 class="text-center mt-5">Edit Project</h2>
+<br />
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+
+            @using (Html.BeginForm(actionName: "Edit", controllerName: "Projects",
+            method: FormMethod.Post))
+            {
+
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                @Html.Label("Title", "Project Title")
+                    <br />
+                @Html.TextBox("Title", null, new { @class = "form-control" })
+
+                @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+
+                <br />
+
+                @Html.ActionLink("Edit Team", "Index", "TeamMembers", new {@projectId = Model.Id}, new {@class="btn btn-primary"})
+
+                <br />
+                <br />
+
+                <button class="btn btn-success" type="submit">Save Modifications</button>
+                @Html.ActionLink("Project List", "Index", "Projects", new {@projectId = Model.Id}, new {@class="btn btn-primary"})
+
+            }
+
+        </div>
+    </div>
+</div>
+

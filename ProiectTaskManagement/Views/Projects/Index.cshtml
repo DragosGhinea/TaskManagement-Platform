@@ -1,0 +1,117 @@
+﻿@model ProiectTaskManagement.Models.Entities.Project
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["ViewButton"] = true;
+}
+<link rel="stylesheet" href="css/projectsIndex.css">
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert my-success-alert" role="alert">
+        @TempData["Success"] <button onclick="this.parentElement.remove()" class="btn btn-close x-button"></button>
+    </div>
+}
+
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Are you sure?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" asp-action="Delete" asp-controller="Projects">
+                    <input id="deleteProjectId" type="hidden" name="projectId" />
+                    <button type="submit" class="btn btn-primary">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteConfirmModal = document.getElementById('confirmDelete');
+    const deleteConfirmProjectId = document.getElementById('deleteProjectId');
+
+    deleteConfirmModal.addEventListener('show.bs.modal', event => {
+
+        const button = event.relatedTarget
+
+        const deSters = button.getAttribute('data-bs-id')
+        const displayName = button.getAttribute('data-bs-name')
+
+
+        const modalBody = deleteConfirmModal.querySelector('.modal-body')
+        deleteConfirmProjectId.value = deSters;
+
+        modalBody.innerHTML = 'This action will remove the project <b>' + displayName + "</b> permanently."
+    });
+</script>
+
+<div class="mt-5 projects-container">
+    <div class="row">
+        <div class="col-sm">
+            <div class="mb-5 text-center">
+                <h4>My Projects</h4>
+                <small class="text-muted">Projects which are owned by me.</small>      
+            </div>
+            @if (ViewBag.MyProjects.Count == 0)
+            {
+                <p>Not such projects found.</p>
+            }
+            else
+            {
+                
+                ViewData["EditButton"] = true;
+                ViewData["DeleteButton"] = true;
+               
+                <div class="my-projects-list">
+                @foreach (ProiectTaskManagement.Models.Entities.Project project in ViewBag.MyProjects)
+                {
+                    <partial name="ProjectDisplay" model="project" view-data="ViewData"/>
+                    <br />
+                }
+                </div>
+
+                ViewData["EditButton"] = false;
+                ViewData["DeleteButton"] = false;
+            }
+
+
+            <div class="mt-5">
+                <center>
+                <a asp-action="Create" asp-controller="Projects" class="btn btn-primary">
+                    <i class="bi bi-folder-plus"></i>
+                    New Project
+                </a>
+                </center>
+            </div>
+        </div>
+        <div class="vertical-line"></div>
+        <div class="col-sm">
+            <div class="mb-5 text-center">
+                <h4>Other Projects</h4>
+                <small class="text-muted">Projects to which I have access.</small>
+            </div>
+            @if (ViewBag.ProjectsWithAccess.Count == 0)
+            {
+                <p>Not such projects found.</p>
+            }
+            else
+            {
+                <div class="other-projects-list">
+                @foreach (ProiectTaskManagement.Models.Entities.Project project in ViewBag.ProjectsWithAccess)
+                {
+                    <partial name="ProjectDisplay" model="project" view-data="ViewData" />
+                    <br />
+                }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,36 @@
+﻿@model ProiectTaskManagement.Models.Entities.Status;
+
+@using (Html.BeginForm(actionName: "Create", controllerName: "Statuses",
+method: FormMethod.Post, new { @id = "edit-status-form" }))
+{
+        <input type="hidden" name="projectId" value="@Model.ProjectId" />
+
+        <div>
+            @Html.TextBox("Name", null, new {@id="new-status-name", @class = "form-control", @style="min-width: 100px; width: 10vw;"})
+            <label>Status Name</label>
+        </div>
+
+        <div>
+            @Html.TextBox("Color", null, new {@id="new-status-color", @type="color", @class="form-control form-control-color", @title="Choose your color"})
+            <label>Status Color</label>
+        </div>
+
+        <div>
+            <button class="btn btn-success" type="submit">Create Status</button>
+        </div>
+
+}
+
+<script>
+    const preview = document.getElementById("status-preview");
+
+    $('#new-status-name').change(function (event) {
+        var nume = event.target.value;
+        preview.innerText=nume;
+    });
+
+    $('#new-status-color').on('input', function (event) {
+        var culoare = event.target.value;
+        preview.style.backgroundColor = culoare;
+    });
+</script>

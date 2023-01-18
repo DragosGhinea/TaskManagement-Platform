@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<link rel="stylesheet" href="css/mainPage.css">
+
+<div class="container-fluid main-page text-white">
+    <div class="row text-center">
+        <h1>Task Management</h1>
+    </div>
+    <div class="row text-center">
+        <div class="logo-container col-sm">
+            <i class="logo-in-cerc bi bi-ui-checks"></i>
+            <img draggable="false" class="cerc" src="images/circle.svg" alt="cerc" />
+        </div>
+        <div class="col-sm justify-content-center cartonas-container">
+            <div class="cartonas d-flex flex-column justify-content-around">
+                <h3>Projects, Tasks and More</h3>
+                <p>
+                    We offer you projects with customized tasks and statuses.
+                    Create your ideal planification while collaborating with others.
+                </p>
+                <p>
+                    We hope you will be able to maximize your productivity with us. If you have any problems at all, don't hesitate
+                    to contact us at contact@taskmanagement.com!
+                </p>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a class="btn main-page-btn" asp-action="Index" asp-controller="Projects">
+                        <i style="margin-right: 1vw" class="bi bi-folder"></i> My Projects
+                    </a>
+                }
+                else
+                {
+                    <a class="btn main-page-btn" asp-area="Identity" asp-page="/Account/Login">
+                        <i style="margin-right: 1vw" class="bi bi-person-fill"></i>
+                        Login
+                    </a>
+                }
+                <img draggable="false" class="norisor1" src="images/norisor1.svg" alt="norisor1" />
+                <img draggable="false" class="norisor2" src="images/norisor2.svg" alt="norisor2" />
+            </div>
+        </div>
+    </div>
+</div>

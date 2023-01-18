@@ -1,0 +1,125 @@
+﻿@keyframes rotationCerc {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(359deg);
+    }
+}
+
+@keyframes norisor1{
+    from {
+        transform: translate(70%, -70%);
+    }
+
+    to {
+        transform: translate(80%, -70%);
+    }
+}
+
+@keyframes norisor2 {
+    from {
+        transform: translate(-80%, 70%);
+    }
+
+    to {
+        transform: translate(-90%, 70%);
+    }
+}
+
+.main-page-btn {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    width: 70%;
+    display: inline-block;
+    align-self: center;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    color: white;
+    background-color: #2865bf;
+    font-size: 1.2em;
+    margin-top: 5vh;
+}
+
+.main-page-btn:hover {
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.main-page-btn:hover ~ .norisor1, .main-page-btn:hover ~ .norisor2 {
+    opacity: 0;
+}
+
+.cerc {
+    width: 25vw;
+    filter: invert(1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    animation: rotationCerc 15s infinite linear;
+}
+
+.logo-in-cerc {
+    position: absolute;
+    font-size: 10vw;
+    width: 10vw;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.logo-container {
+    position: relative;
+}
+
+body {
+    background: rgb(45,152,218);
+    background: linear-gradient(338deg, rgba(45,152,218,1) 32%, rgba(69,170,242,1) 78%);
+    overflow-x: hidden;
+}
+
+.main-page > .row:nth-child(1) {
+    margin-top: 10vh;
+}
+
+.main-page > .row:nth-child(2) {
+    margin-top: 13vh;
+    gap: 15vw;
+    margin-bottom: 1px;
+}
+
+.cartonas {
+    background: rgb(15,185,177);
+    background: linear-gradient(338deg, rgba(15,185,177,1) 32%, rgba(69,170,242,1) 90%);
+    width: 25vw;
+    min-width: 250px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 15px;
+    border-radius: 15px;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    min-height: 35vh;
+    cursor: default;
+}
+
+/*https://codepen.io/sosuke/pen/Pjoqqp pentru generarea culorilor din hex in filter*/
+.norisor1 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20vw;
+    filter: brightness(40%) saturate(100%) invert(99%) sepia(79%) saturate(585%) hue-rotate(175deg) brightness(89%) contrast(97%);
+    animation: norisor1 2s infinite alternate-reverse;
+    transition-duration: 0.6s;
+}
+
+.norisor2 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 20vw;
+    animation: norisor2 2s infinite alternate-reverse;
+    filter: brightness(40%) saturate(100%) invert(99%) sepia(79%) saturate(585%) hue-rotate(175deg) brightness(89%) contrast(97%);
+    transition-duration: 0.6s;
+}
