@@ -30,6 +30,13 @@ Altough the database is generated code first, based on models, it  was firstly d
 
 ![DatabaseDiagram](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/DatabaseDiagram.svg)
 
+### Database Info
+
+- In this diagram "key#" means key is part of the primary key for that table.
+- Foreign keys are not marked but they are defined in the project. Most of them are obvious due to the key keeping the same name (exceptions are TEAM_MEMBERS(added_by) which references USER(user_id) and TASK_ASSIGNS(assigned_by) which references TEAM_MEMBERS(user_id)).
+- The dotted relationship does not exist in the database itself, but it exists at a logical level.
+- The database contains as many cascade events as possible taking into account the cycle and multi-path cascade limitations.
+
 ## Preview Images
 
 ![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview1.png)
@@ -46,8 +53,6 @@ Altough the database is generated code first, based on models, it  was firstly d
 ![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview12.png)
 ![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview13.png)
 ![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview14.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview15.png)
-![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview16.png)
 
 ## Other Info
 - This project was initially created in romanian and translated afterwards. The project might not have it's variables fully translated! (Sorry for that)
