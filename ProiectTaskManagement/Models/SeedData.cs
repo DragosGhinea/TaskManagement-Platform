@@ -493,7 +493,7 @@ namespace ProiectTaskManagement.Models
                         Description = "Prioritize identified vulnerabilities based on risk level",
                         StatusId = 2,
                         StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 3, 10, DateTime.Now.Minute, DateTime.Now.Second),
-                        EndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 31, 11, DateTime.Now.Minute, DateTime.Now.Second)
+                        EndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 25, 11, DateTime.Now.Minute, DateTime.Now.Second)
                     }
                     ,
 

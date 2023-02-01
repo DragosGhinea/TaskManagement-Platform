@@ -118,50 +118,59 @@ namespace ProiectTaskManagement.Areas.Identity.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            AppUser user;
-            if (!Input.Email.Contains("@"))
+            if (ModelState.IsValid)
             {
-                user = await _userManager.FindByNameAsync(Input.Email);
-            }
-            else
-            {
-                user = await _userManager.FindByEmailAsync(Input.Email);
-            }
-
-            if (user!=null && ModelState.IsValid)
-            {
+                AppUser user;
+                if (!Input.Email.Contains("@"))
+                {
+                    user = await _userManager.FindByNameAsync(Input.Email);
+                }
+                else
+                {
+                    user = await _userManager.FindByEmailAsync(Input.Email);
+                }
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
+
+                if (user != null)
                 {
-                    if(user.ProfileImg == null)
+                    var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                 
+                    if (result.Succeeded)
                     {
-                        int calcul = 0;
-                        foreach (char v in user.Id)
+                        if (user.ProfileImg == null)
                         {
-                            calcul += v;
+                            int calcul = 0;
+                            foreach (char v in user.Id)
+                            {
+                                calcul += v;
+                            }
+                            calcul %= 16;
+                            calcul += 1;
+
+
+                            user.ProfileImg = Path.Combine("images", "defaultPfp", "pfp" + calcul + ".svg");
+                            await _userManager.UpdateAsync(user);
+                            //await _db.SaveChangesAsync();
                         }
-                        calcul %= 16;
-                        calcul += 1;
 
-
-                        user.ProfileImg = Path.Combine("images", "defaultPfp", "pfp" + calcul + ".svg");
-                        await _userManager.UpdateAsync(user);
-                        //await _db.SaveChangesAsync();
+                        _logger.LogInformation("User logged in.");
+                        return LocalRedirect(returnUrl);
                     }
-
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    if (result.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
                 }
                 else
                 {
