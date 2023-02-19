@@ -26,7 +26,7 @@ The application contains:
      - Some objects have these operations accessible via modals in other objects' views
 
 ## Database Design
-Altough the database is generated code first, based on models, it  was firstly designed as a diagram.
+Altough the database is generated code first, based on models, it was first designed as a diagram.
 
 ![DatabaseDiagram](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/DatabaseDiagram.svg)
 
@@ -55,7 +55,7 @@ Altough the database is generated code first, based on models, it  was firstly d
 ![AppPreview](https://github.com/DragosGhinea/TaskManagement-Platform/blob/main/Previews/AppPreview14.png)
 
 ## Other Info
-- This project was initially created in romanian and translated afterwards. The project might not have it's variables fully translated! (Sorry for that)
+- This project was initially created in romanian and translated afterwards. The project might not have its variables fully translated! (Sorry for that)
 - This project was made for a university assignment
 - The application is semi-responsive, was not properly tested nor was it intended to be fully responsive in the first place. It was tested on 2560 x 1600 resolution.
 - This project was made in two weeks
